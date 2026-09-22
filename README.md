@@ -26,6 +26,32 @@ npm run dev
 # http://localhost:3000
 ```
 
+## ESG 환경 공시 데이터 갱신 (연 1회)
+
+`environment.html` 의 환경 실적 표는 손으로 고치지 않고 빌드 스크립트로 생성합니다.
+표는 항상 **최근 3개년 + 목표 + 목표 대비**로 열 수가 고정되어, 해가 바뀌어도 열이 늘어나지 않습니다.
+결과물이 정적 HTML 이라 자바스크립트 없이 검색엔진·스크린리더에 그대로 노출됩니다.
+
+```bash
+# 1) content/esg.json 의 연도별 수치를 갱신 (원천: 환경배출·자원관리 워크북)
+# 2) 표 재생성
+py -3 tools/build_esg.py
+# 3) 변경된 environment.html 을 커밋
+```
+
+`environment.html` 안의 `<!-- ESG:*:START -->` ~ `<!-- ESG:*:END -->` 구간이 생성 대상입니다.
+이 주석을 지우면 빌드가 실패하니 그대로 두세요. 마커 밖의 본문·이미지는 직접 수정해도 됩니다.
+
+| 블록 | 내용 |
+|---|---|
+| `ESG:ENERGY` | 총 에너지 소비 실적 (SASB TR-AP-130a.1) |
+| `ESG:GHG` | 온실가스 배출량 · 에너지 사용량 |
+| `ESG:AIR` | 대기오염물질 배출량 |
+| `ESG:WATER` | 용수 사용량 · 폐수 위탁처리량 |
+| `ESG:WASTE` | 폐기물 발생 및 처리 실적 (SASB TR-AP-150a.1) |
+| `ESG:MATERIAL` | 원부자재 사용량 |
+| `ESG:CIRCULARITY` | 재활용 실적 · 자원순환 성과 |
+
 ## 윤리경영 제보 (DB 저장 + 관리자 리포트)
 
 홈페이지 하단 제보 폼(`/#contact`)은 `POST /api/report`로 접수되어 **SQLite DB에 저장**됩니다.
